@@ -2,125 +2,304 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>🚦 Real-Time Traffic Detection</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚦 Pathfinder AI</title>
     <style>
-        body {
+        * {
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: url('https://wallpaper.dog/large/5529102.jpg') no-repeat center center fixed;
-            background-size: cover;
-            color: white;
-            text-align: center;
-            padding: 30px;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         h1 {
-            font-size: 3em;
-            margin-bottom: 10px;
-            color: #ffdd57;
-            animation: slideDown 1s ease-out;
+            font-size: 2.5em;
+            color: #00e676;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 230, 118, 0.5);
+            animation: fadeIn 1s ease-in;
+        }
+
+        .section {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px 0;
+            background: #252525;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
         }
 
         h2 {
-            color: #ffffff;
-            margin-top: 40px;
-            border-bottom: 2px solid #ffdd57;
-            display: inline-block;
-            padding-bottom: 5px;
+            font-size: 1.8em;
+            color: #00e676;
+            margin-bottom: 15px;
+            border-left: 4px solid #00e676;
+            padding-left: 10px;
         }
 
         ul {
             list-style: none;
-            padding: 0;
         }
 
         li {
-            background-color: rgba(0, 0, 0, 0.6);
-            margin: 10px auto;
-            width: 60%;
+            background: #333;
+            margin: 10px 0;
             padding: 15px;
-            border-radius: 10px;
-            transition: 0.3s;
+            border-radius: 8px;
+            transition: background 0.3s ease;
         }
 
         li:hover {
-            background-color: rgba(255, 221, 87, 0.8);
-            color: black;
+            background: #444;
         }
 
         a {
-            color: white;
-            font-weight: bold;
+            color: #00e676;
             text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
         }
 
         a:hover {
-            color: black;
+            text-decoration: underline;
+        }
+
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
         }
 
         input[type="file"] {
-            margin: 20px 0;
+            background: #333;
+            color: #e0e0e0;
             padding: 10px;
-            border-radius: 10px;
-            background: white;
+            border: 1px solid #00e676;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+            cursor: pointer;
+        }
+
+        input[type="file"]::-webkit-file-upload-button {
+            background: #00e676;
+            color: #1a1a1a;
             border: none;
-            width: 300px;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        input[type="file"]::-webkit-file-upload-button:hover {
+            background: #00c853;
         }
 
         input[type="submit"] {
-            background: #ffdd57;
+            background: #00e676;
+            color: #1a1a1a;
             border: none;
-            color: black;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: bold;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s ease-in-out;
+            transition: background 0.3s ease;
         }
 
         input[type="submit"]:hover {
-            background: #fff176;
+            background: #00c853;
         }
 
-        @keyframes slideDown {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
         }
 
-        @media (max-width: 768px) {
-            li {
-                width: 90%;
+        .modal-content {
+            background: #252525;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content h3 {
+            color: #00e676;
+            margin-bottom: 15px;
+        }
+
+        .modal-content p {
+            margin-bottom: 20px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .modal-button {
+            background: #00e676;
+            color: #1a1a1a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .modal-button.cancel {
+            background: #444;
+            color: #e0e0e0;
+        }
+
+        .modal-button:hover {
+            background: #00c853;
+        }
+
+        .modal-button.cancel:hover {
+            background: #555;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .section {
+                padding: 15px;
             }
 
             input[type="file"], input[type="submit"] {
-                width: 90%;
+                max-width: 100%;
+            }
+
+            .modal-content {
+                width: 95%;
             }
         }
     </style>
 </head>
 <body>
-    <h1>🚦 Real-Time Traffic Detection</h1>
+    <h1>🚦 Traffic Detection Dashboard</h1>
 
-    <h2>🎥 Available Videos</h2>
-    <ul>
-        {% for video in videos %}
-        <li><a href="{{ url_for('live', video=video) }}">{{ video }}</a></li>
-        {% endfor %}
-    </ul>
+    <div class="section">
+        <h2>🎥 Video Streams</h2>
+        <ul>
+            {% for video in videos %}
+            <li><a onclick="showModal('video', '{{ video }}', '{{ url_for('live', video=video) }}')">{{ video }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
 
-    <h2>🖼️ Upload Image for Detection</h2>
-    <form action="{{ url_for('upload_image') }}" method="post" enctype="multipart/form-data">
-        <input type="file" name="image" accept="image/*" required>
-        <br>
-        <input type="submit" value="Detect">
-    </form>
+    <div class="section">
+        <h2>🖼️ Upload Image</h2>
+        <form class="upload-form" id="uploadForm" action="{{ url_for('upload_image') }}" method="post" enctype="multipart/form-data">
+            <input type="file" name="image" accept="image/*" required>
+            <input type="submit" value="Analyze Image" onclick="showUploadModal(event)">
+        </form>
+    </div>
 
-    <h2>🖼️ Detected Images</h2>
-    <ul>
-        {% for image in images %}
-        <li><a href="{{ url_for('uploaded_file', filename=image) }}" target="_blank">{{ image }}</a></li>
-        {% endfor %}
-    </ul>
+    <div class="section">
+        <h2>🖼️ Processed Images</h2>
+        <ul>
+            {% for image in images %}
+            <li><a onclick="showModal('image', '{{ image }}', '{{ url_for('uploaded_file', filename=image) }}')">{{ image }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle"></h3>
+            <p id="modalMessage"></p>
+            <div class="modal-buttons">
+                <button class="modal-button" id="confirmButton">Confirm</button>
+                <button class="modal-button cancel" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showModal(type, name, url) {
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            const confirmButton = document.getElementById('confirmButton');
+
+            modalTitle.textContent = type === 'video' ? 'View Video Stream' : 'View Processed Image';
+            modalMessage.textContent = `Do you want to open ${type} "${name}"?`;
+            confirmButton.onclick = () => {
+                window.open(url, '_blank');
+                closeModal();
+            };
+
+            modal.style.display = 'flex';
+        }
+
+        function showUploadModal(event) {
+            event.preventDefault();
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            const confirmButton = document.getElementById('confirmButton');
+
+            modal Stuarts: modalTitle.textContent = 'Confirm Upload';
+            modalMessage.textContent = 'Are you sure you want to upload this image for analysis?';
+            confirmButton.onclick = () => {
+                document.getElementById('uploadForm').submit();
+                closeModal();
+            };
+
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('modal')) {
+                closeModal();
+            }
+        });
+    </script>
 </body>
 </html>
-
