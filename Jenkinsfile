@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/Rameshyadav55/indian-traffic-ai-main.git'
+                git branch: 'main', url: 'https://github.com/Vrushanksk2004/indian-traffic-ai.git'
             }
         }
 
