@@ -17,7 +17,7 @@ def live(video):
     return Response(detect_objects(video),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/upload_image', methods=['GET', 'POST'])
+@app.route('/upload_image', methods=['POST'])
 def upload_image():
     if 'image' not in request.files:
         return "No image file part", 400
@@ -41,5 +41,3 @@ def uploaded_file(filename):
 if __name__ == '__main__':
     os.environ["YOLO_CONFIG_DIR"] = "/tmp"
     app.run(host='0.0.0.0', port=5000)
-
-
