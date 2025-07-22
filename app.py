@@ -17,7 +17,7 @@ def live(video):
     return Response(detect_objects(video),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/upload_image', methods=['POST'])
+@app.route('/upload_image', methods=['GET', 'POST'])
 def upload_image():
     if 'image' not in request.files:
         return "No image file part", 400
